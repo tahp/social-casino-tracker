@@ -7,4 +7,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(200).json({ message: 'Bonus added successfully!' });
   } else {
     res.status(405).json({ error: 'Method not allowed' });
+  }
 }
