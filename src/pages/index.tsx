@@ -2,12 +2,25 @@ import { GetServerSideProps } from 'next';
 import { prisma } from '../lib/prisma';
 import { DateTime } from 'luxon';
 
-export const getServerSideProps: GetServerSideProps = async () => {
+interface Casino {
+  id: number;
+  name: string;
+  url: string;
+  bonusTime: string;
+  timeZone: string;
+  notes: string | null;
+}
+
+interface HomeProps {
+  casinos: Casino[];
+}
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const casinos = await prisma.casino.findMany();
-  return { props: { casinos } };
+  return { props: { casinos: JSON.parse(JSON.stringify(casinos)) } };
 };
 
-export default function Home({ casinos }) {
+export default function Home({ casinos }: HomeProps) {
   return (
     <main className="p-4 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">🎰 Casino Bonus Tracker</h1>
@@ -32,9 +45,9 @@ export default function Home({ casinos }) {
 
             const diff = nextBonus.diff(now, ['hours', 'minutes']).toObject();
             const countdown =
-              diff.hours < 0
+              diff.hours && diff.hours < 0
                 ? 'Ready!'
-                : `${Math.floor(diff.hours)}h ${Math.floor(diff.minutes)}m`;
+                : `${Math.floor(diff.hours || 0)}h ${Math.floor(diff.minutes || 0)}m`;
 
             return (
               <tr key={casino.id} className="hover:bg-gray-50">
