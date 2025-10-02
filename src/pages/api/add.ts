@@ -1,3 +1,5 @@
+export {}; // Ensures TypeScript treats this file as a module
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
